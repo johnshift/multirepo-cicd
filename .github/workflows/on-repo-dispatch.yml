@@ -1,4 +1,4 @@
-name: Dev Integration
+name: DEV
 on:
   repository_dispatch:
     types: [backend-main, frontend-main]
