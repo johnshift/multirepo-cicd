@@ -1,5 +1,6 @@
 name: DEV
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [backend-main, frontend-main]
 
