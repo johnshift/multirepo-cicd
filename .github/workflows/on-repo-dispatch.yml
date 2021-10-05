@@ -30,3 +30,6 @@ jobs:
 
       - name: Echo directory
         run: tree -L 2
+
+      - name: Echo status
+        run: git status
