@@ -126,7 +126,7 @@ jobs:
       - name: Build Backend
         run: mvn clean install -DskipTests
       - name: Deploy to Heroku
-        uses: AkhileshNS/heroku-deploy
+        uses: AkhileshNS/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
