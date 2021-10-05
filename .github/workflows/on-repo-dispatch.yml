@@ -25,7 +25,7 @@ jobs:
         run: git submodule status
 
       - name: Update submodules
-        run: git submodule foreach git pull --ff-only origin main
+        run: git submodule foreach git pull --no-rebase --allow-unrelated-histories origin main
 
       
       - name: Echo submodules after update
