@@ -7,7 +7,7 @@ on:
 jobs:
 
   deploy:
-    name: Merge staging -> master
+    name: Merge staging -> main
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
@@ -18,16 +18,16 @@ jobs:
       - name: "TODO: Deploy"
         run: echo "deploy to vercel, heroku"
 
-      - name: Create pull request staging -> master
+      - name: Create pull request staging -> main
         uses: repo-sync/pull-request@v2
         id: create-pr
         with:
-          destination_branch: "master"                      
-          pr_title: "Pulling ${{ github.ref }} into master branch"
+          destination_branch: "main"                      
+          pr_title: "Pulling ${{ github.ref }} into main branch"
           pr_body: ":crown: *An automated PR*"       
           pr_label: "automerge"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: 'TODO: if accept, merge to master, then deploy to production'
+      - name: 'TODO: if accept, merge to main, then deploy to production'
         run: echo "..."
