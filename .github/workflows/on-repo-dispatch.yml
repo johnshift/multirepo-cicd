@@ -82,11 +82,56 @@ jobs:
         with:
           branch: dev
           message: 'updated branch dev from workflow'
+
+  deploy-vercel:
+    name: Deploy frontend to vercel
+    runs-on: ubuntu-latest
+    needs: [test-frontend-backend]
+    steps:
+      - name: Checkout frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: johnshift/multirepo-frontend
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          registry-url: https://registry.npmjs.org/
+      - name: "Deploy to vercel"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: npx vercel --token ${VERCEL_TOKEN} --prod
+
+  deploy-heroku:
+    name: Deploy to heroku
+    runs-on: ubuntu-latest
+    needs: [test-frontend-backend]
+    steps:
+      - name: Checkout frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: johnshift/multirepo-backend
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'maven'
+      - name: Build Backend
+        run: mvn clean install -DskipTests
+      - name: Deploy to Heroku
+        uses: AkhileshNS/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
   
   merge-to-main:
     name: Merge dev branch to staging
     runs-on: ubuntu-latest
-    needs: [test-frontend-backend]
+    needs: [deploy-vercel, deploy-heroku]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
