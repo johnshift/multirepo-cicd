@@ -14,99 +14,95 @@ jobs:
     name: Test Frontend + Backend
     runs-on: ubuntu-latest
     steps:
-      - name: Skipping
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'dev'
+          submodules: true
+      - uses: fregante/setup-git-user@v1
+      
+      - name: Echo submodules before update
+        run: git submodule status
+
+      - name: Clean submodules
         run: |
-          sleep 3
-          echo "skipping ..."
-      # - name: Checkout
-      #   uses: actions/checkout@v2
-      #   with:
-      #     ref: 'dev'
-      #     submodules: true
-      # - uses: fregante/setup-git-user@v1
-      
-      # - name: Echo submodules before update
-      #   run: git submodule status
+          git submodule deinit backend
+          git submodule deinit frontend
+          git rm -rf backend
+          git rm -rf frontend
+          rm -rf .git/modules/backend
+          rm -rf .git/modules/frontend
 
-      # - name: Clean submodules
-      #   run: |
-      #     git submodule deinit backend
-      #     git submodule deinit frontend
-      #     git rm -rf backend
-      #     git rm -rf frontend
-      #     rm -rf .git/modules/backend
-      #     rm -rf .git/modules/frontend
-
-      # - name: Add submodules
-      #   run: |
-      #     git submodule add http://github.com/johnshift/multirepo-frontend frontend
-      #     git submodule add http://github.com/johnshift/multirepo-backend backend
+      - name: Add submodules
+        run: |
+          git submodule add http://github.com/johnshift/multirepo-frontend frontend
+          git submodule add http://github.com/johnshift/multirepo-backend backend
 
       
-      # - name: Echo submodules after update
-      #   run: git submodule status
+      - name: Echo submodules after update
+        run: git submodule status
 
-      # - name: Setup Java
-      #   uses: actions/setup-java@v2
-      #   with:
-      #     distribution: 'adopt'
-      #     java-version: '11'
-      #     cache: 'maven'
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'maven'
 
-      # - name: Build Backend
-      #   working-directory: ./backend
-      #   run: mvn clean install -DskipTests
+      - name: Build Backend
+        working-directory: ./backend
+        run: mvn clean install -DskipTests
 
-      # - name: Setup Frontend
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '14'
-      #     cache: 'npm'
-      #     cache-dependency-path: frontend/yarn.lock
+      - name: Setup Frontend
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: frontend/yarn.lock
 
-      # - name: Install Yarn
-      #   run: npm install -g yarn
+      - name: Install Yarn
+        run: npm install -g yarn
 
-      # - name: Compile Frontend
-      #   working-directory: ./frontend
-      #   run: yarn install && yarn build
+      - name: Compile Frontend
+        working-directory: ./frontend
+        run: yarn install && yarn build
 
-      # - name: Run End-to-End Tests
-      #   uses: cypress-io/github-action@v2
-      #   with:
-      #     start: yarn start
-      #     working-directory: ./frontend
-      #     wait-on: "http://localhost:5000"
-      #     wait-on-timeout: 30
-      #     browser: chrome
-      #     headless: true
+      - name: Run End-to-End Tests
+        uses: cypress-io/github-action@v2
+        with:
+          start: yarn start
+          working-directory: ./frontend
+          wait-on: "http://localhost:5000"
+          wait-on-timeout: 30
+          browser: chrome
+          headless: true
 
-      # - name: Save changes to dev branch
-      #   uses: EndBug/add-and-commit@v7
-      #   with:
-      #     branch: dev
-      #     message: 'updated branch dev from workflow'
+      - name: Save changes to dev branch
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: dev
+          message: 'updated branch dev from workflow'
 
-  # deploy-vercel:
-  #   name: Deploy frontend to vercel
-  #   runs-on: ubuntu-latest
-  #   needs: [test-frontend-backend]
-  #   steps:
-  #     - name: Checkout frontend repository
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: johnshift/multirepo-frontend
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: '14'
-  #         registry-url: https://registry.npmjs.org/
-  #     - name: "Deploy to vercel"
-  #       env:
-  #         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  #         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  #         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  #       run: npx vercel --token ${VERCEL_TOKEN} --prod
+  deploy-vercel:
+    name: Deploy frontend to vercel
+    runs-on: ubuntu-latest
+    needs: [test-frontend-backend]
+    steps:
+      - name: Checkout frontend repository
+        uses: actions/checkout@v2
+        with:
+          repository: johnshift/multirepo-frontend
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          registry-url: https://registry.npmjs.org/
+      - name: "Deploy to vercel"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: npx vercel --token ${VERCEL_TOKEN} --prod
 
   deploy-heroku:
     name: Deploy to heroku
@@ -135,8 +131,7 @@ jobs:
   merge-to-main:
     name: Merge dev branch to staging
     runs-on: ubuntu-latest
-    # needs: [deploy-vercel]
-    needs: [deploy-heroku]
+    needs: [deploy-vercel, deploy-heroku]
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
