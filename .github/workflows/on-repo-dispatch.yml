@@ -19,6 +19,29 @@ jobs:
         with:
           ref: 'dev'
           submodules: true
+      - uses: fregante/setup-git-user@v1
+      
+      - name: Echo submodules before update
+        run: git submodule status
+
+      - name: Clean submodules
+        run: |
+          git submodule deinit backend
+          git submodule deinit frontend
+          git rm -rf backend
+          git rm -rf frontend
+          git commit -m "Removed submodule"
+          rm -rf .git/modules/backend
+          rm -rf .git/modules/frontend
+
+      - name: Add submodules
+        run: |
+          git submodule add http://github.com/johnshift/multirepo-frontend frontend
+          git submodule add http://github.com/johnshift/multirepo-backend backend
+
+      
+      - name: Echo submodules after update
+        run: git submodule status
 
       - name: Setup Java
         uses: actions/setup-java@v2
@@ -55,6 +78,11 @@ jobs:
           browser: chrome
           headless: true
 
+      - name: Save changes to dev branch
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: dev
+          message: 'updated branch dev from workflow'
   
   merge-to-main:
     name: Merge dev branch to staging
