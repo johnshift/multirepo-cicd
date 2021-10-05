@@ -1,7 +1,11 @@
 name: DEV
 on:
   repository_dispatch:
-    types: [backend-main]
+    types: [backend-main, frontend-main]
+
+concurrency:
+  group: frontend-backend-integration
+  cancel-in-progress: true
 
 jobs:
 
@@ -13,4 +17,4 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.ref }}
       - name: Echo
-        run: echo "ref = ${{ github.event.client_payload.ref }}"
+        run: echo ref = ${{ github.event.client_payload.ref }}
