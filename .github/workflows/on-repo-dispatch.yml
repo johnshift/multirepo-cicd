@@ -30,7 +30,7 @@ jobs:
           git submodule deinit frontend
           git rm -rf backend
           git rm -rf frontend
-          git commit-m "Removed submodule "
+          git commit -m "Removed submodule "
 
       - name: Add submodules
         run: |
