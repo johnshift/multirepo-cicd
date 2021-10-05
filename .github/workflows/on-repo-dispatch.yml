@@ -19,6 +19,9 @@ jobs:
         with:
           ref: 'dev'
           submodules: true
+      
+      - name: Echo submodules
+        run: git submodule status
 
       - name: Setup Java
         uses: actions/setup-java@v2
