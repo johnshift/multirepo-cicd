@@ -12,18 +12,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-  
-      - name: Checkout Backend
-        uses: actions/checkout@v2
-        with:
-          repository: 'johnshift/multirepo-backend'
-          path: backend
-
-      - name: Checkout tools repo
-        uses: actions/checkout@v2
-        with:
-          repository: 'johnshift/multirepo-frontend'
-          path: frontend
 
       - name: Install tree
         run: sudo apt install tree -y
@@ -33,3 +21,6 @@ jobs:
 
       - name: Echo status
         run: git status
+
+      - name: Echo submodule status
+        run: git submodule status
