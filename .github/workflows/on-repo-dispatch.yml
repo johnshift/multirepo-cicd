@@ -67,10 +67,10 @@ jobs:
           headless: true
 
       - name: Save changes to dev branch
-        run: |
-          git add .
-          git commit -m 'automated update to branch dev'
-          git push origin dev
+        uses: EndBug/add-and-commit@v7
+        with:
+          branch: dev
+          message: 'updated branch dev from workflow'
   
   merge-to-main:
     name: Merge dev branch to staging
