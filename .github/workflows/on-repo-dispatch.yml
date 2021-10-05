@@ -5,13 +5,13 @@ on:
     types: [backend-main, frontend-main]
 
 concurrency:
-  group: frontend-backend-integration
+  group: end-to-end-local
   cancel-in-progress: true
 
 jobs:
 
   end-to-end-local:
-    name:  Local End-to-End Test
+    name:  End-to-End Test Local
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -128,7 +128,7 @@ jobs:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
   
-  merge-to-main:
+  merge-to-staging:
     name: Merge dev branch to staging
     runs-on: ubuntu-latest
     needs: [deploy-vercel, deploy-heroku]
