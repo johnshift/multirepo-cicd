@@ -19,6 +19,7 @@ jobs:
         with:
           ref: 'dev'
           submodules: true
+      - uses: fregante/setup-git-user@v1
       
       - name: Echo submodules before update
         run: git submodule status
@@ -65,6 +66,11 @@ jobs:
           browser: chrome
           headless: true
 
+      - name: Save changes to dev branch
+        run: |
+          git add .
+          git commit -m 'automated update to branch dev'
+          git push origin dev
   
   merge-to-main:
     name: Merge dev branch to staging
