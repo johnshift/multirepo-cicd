@@ -10,8 +10,8 @@ concurrency:
 
 jobs:
 
-  test-frontend-backend:
-    name: Test Frontend + Backend
+  end-to-end-local:
+    name: End to end Tests (local)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -86,7 +86,7 @@ jobs:
   deploy-vercel:
     name: Deploy frontend to vercel
     runs-on: ubuntu-latest
-    needs: [test-frontend-backend]
+    needs: [end-to-end-local]
     steps:
       - name: Checkout frontend repository
         uses: actions/checkout@v2
@@ -107,7 +107,7 @@ jobs:
   deploy-heroku:
     name: Deploy to heroku
     runs-on: ubuntu-latest
-    needs: [test-frontend-backend]
+    needs: [end-to-end-local]
     steps:
       - name: Checkout frontend repository
         uses: actions/checkout@v2
