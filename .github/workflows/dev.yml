@@ -27,8 +27,10 @@ jobs:
       #   uses: pnpm/action-setup@v2.0.1
       #   with:
       #     version: 6
+      - name: Log App.tsx
+        run: cat src/App.tsx
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: '14'
           cache: 'npm'
@@ -37,19 +39,17 @@ jobs:
       #   run: pnpm install --frozen-lockfile && pnpm build
       - name: "Deploy to vercel dev"
         id: deploy-vercel
-        # uses: amondnet/vercel-action@v20
-        # with:
-        #   vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        #   vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
-        #   vercel-org-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        #   github-token: ${{ secrets.GITHUB_TOKEN }}
-        #   # vercel-args: '--prod'
-        # # run: npx vercel --token ${VERCEL_TOKEN} --prod
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        run: npx vercel --token ${VERCEL_TOKEN}
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_TL_ENGINE }}
+          scope: ${{ secrets.VERCEL_ORG_ID }} 
+        # env:
+        #   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        #   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        #   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        # run: npx vercel --token ${VERCEL_TOKEN}
   
 
   # end-to-end-tests:
