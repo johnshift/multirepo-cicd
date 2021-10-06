@@ -27,16 +27,17 @@ jobs:
       #   uses: pnpm/action-setup@v2.0.1
       #   with:
       #     version: 6
-      # - name: Setup Node
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: '14'
-      #     cache: 'pnpm'
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          cache: 'npm'
+          # cache: 'pnpm'
       # - name: Build
       #   run: pnpm install --frozen-lockfile && pnpm build
       - name: "Deploy to vercel dev"
-        uses: amondnet/vercel-action@v20
         id: deploy-vercel
+        # uses: amondnet/vercel-action@v20
         # with:
         #   vercel-token: ${{ secrets.VERCEL_TOKEN }}
         #   vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
