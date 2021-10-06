@@ -35,6 +35,7 @@ jobs:
       # - name: Build
       #   run: pnpm install --frozen-lockfile && pnpm build
       - name: "Deploy to vercel dev"
+        uses: amondnet/vercel-action@v20
         id: deploy-vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
