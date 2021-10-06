@@ -1,6 +1,6 @@
-[submodule "frontend"]
-	path = frontend
-	url = http://github.com/johnshift/multirepo-frontend
 [submodule "backend"]
 	path = backend
-	url = http://github.com/johnshift/multirepo-backend
+	url = https://github.com/johnshift/multirepo-backend
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/johnshift/multirepo-frontend
