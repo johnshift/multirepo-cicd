@@ -1,10 +1,11 @@
-# Hello World Program in Bash Shell
-
+# manual entry for each submodule needed
 submodules=(
     "backend"
     "frontend"
 );
 
+# manual entry for each repo needed
+# IMPORTANT: each submodule should be mapped 1:1 with repos
 repos=(
     "johnshift/multirepo-backend"
     "johnshift/multirepo-frontend"

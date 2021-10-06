@@ -20,27 +20,6 @@ jobs:
           ref: 'dev'
           submodules: true
       - uses: fregante/setup-git-user@v1
-      
-      # - name: Echo submodules before update
-      #   run: git submodule status
-
-      # - name: Clean submodules
-      #   run: |
-      #     git submodule deinit backend
-      #     git submodule deinit frontend
-      #     git rm -rf backend
-      #     git rm -rf frontend
-      #     rm -rf .git/modules/backend
-      #     rm -rf .git/modules/frontend
-
-      # - name: Add submodules
-      #   run: |
-      #     git submodule add http://github.com/johnshift/multirepo-frontend frontend
-      #     git submodule add http://github.com/johnshift/multirepo-backend backend
-
-      
-      # - name: Echo submodules after update
-      #   run: git submodule status
 
       - name: Init submodules
         run: bash init-submodules.sh
@@ -80,7 +59,7 @@ jobs:
           browser: chrome
           headless: true
 
-      - name: Save changes to dev branch
+      - name: Save changes (if any) to dev branch
         uses: EndBug/add-and-commit@v7
         with:
           branch: dev
