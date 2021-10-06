@@ -40,7 +40,7 @@ jobs:
         id: deploy-vercel
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
           vercel-org-id: ${{ secrets.VERCEL_PROJECT_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # vercel-args: '--prod'
