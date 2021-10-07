@@ -24,7 +24,7 @@ jobs:
           repository: johnshift/multirepo-frontend
       - name: "Deploy to vercel dev"
         id: deploy-vercel
-        uses: amondnet/vercel-action@
+        uses: amondnet/vercel-action@20
         env: # or you can remove this and replace it with ${{ secrets.<KEY> }}
           MSG: "HOLY SHIT"
         with:
@@ -32,7 +32,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }} 
-          vercel-args: "--build-env REACT_APP_HELLO=${ env.MSG }"
+          vercel-args: "--build-env REACT_APP_HELLO=${{ env.MSG }}"
     
   # end-to-end-local:
   #   name:  End-to-End Test Local
