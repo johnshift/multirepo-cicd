@@ -8,3 +8,7 @@
 
 ## When pulling locally
 - always use `git pull origin <branch> --recurse-submodules`
+
+## known issues
+- vercel cli `--env` does not allow whitespace (very annoying when using environment variables in ci)
+- vitejs unstable jest typescript support for import.meta
