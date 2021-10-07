@@ -16,6 +16,8 @@ jobs:
     environment:
       name: web DEV
       url: ${{ steps.deploy-vercel.outputs.preview-url }}
+    env: # or you can remove this and replace it with ${{ secrets.<KEY> }}
+      MSG: "HOLY SHIT"
     steps:
       - name: Checkout frontend repository
         uses: actions/checkout@v2
@@ -25,8 +27,6 @@ jobs:
       - name: "Deploy to vercel dev"
         id: deploy-vercel
         uses: amondnet/vercel-action@v20
-        env: # or you can remove this and replace it with ${{ secrets.<KEY> }}
-          MSG: "HOLY SHIT"
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
