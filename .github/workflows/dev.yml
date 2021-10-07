@@ -16,8 +16,6 @@ jobs:
     environment:
       name: web DEV
       url: ${{ steps.deploy-vercel.outputs.preview-url }}
-    env: # or you can remove this and replace it with ${{ secrets.<KEY> }}
-      MSG: "HOLY SHIT"
     steps:
       - name: Checkout frontend repository
         uses: actions/checkout@v2
@@ -26,13 +24,15 @@ jobs:
           repository: johnshift/multirepo-frontend
       - name: "Deploy to vercel dev"
         id: deploy-vercel
-        uses: amondnet/vercel-action@v20
+        uses: amondnet/vercel-action@
+        env: # or you can remove this and replace it with ${{ secrets.<KEY> }}
+          MSG: "HOLY SHIT"
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }} 
-          vercel-args: "--build-env REACT_APP_HELLO=${{ MSG }}"
+          vercel-args: "--build-env REACT_APP_HELLO=${{ env.MSG }}"
     
   # end-to-end-local:
   #   name:  End-to-End Test Local
