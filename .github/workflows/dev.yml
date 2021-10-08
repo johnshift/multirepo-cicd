@@ -42,7 +42,7 @@ jobs:
     needs: [deploy-vercel]
     environment:
       name: api DEV
-      url: ${{ outputs.url }}
+      url: ${{ secrets.HEROKU_APP_URL }}
     steps:
       # - name: Echo output from other job
       #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
@@ -71,8 +71,6 @@ jobs:
           #       The "HD_" string will be stripped when the app starts. 
           #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
           HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
-    outputs:
-      url: https://multirepo-backend.herokuapp.com/users
     
   # end-to-end-local:
   #   name:  End-to-End Test Local
