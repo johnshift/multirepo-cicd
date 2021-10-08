@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: web DEV
-      url: ${{ steps.deploy-vercel.outputs.preview-url }}
+      url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
     steps:
       - name: Checkout frontend repository
         uses: actions/checkout@v2
@@ -25,14 +25,14 @@ jobs:
       - name: "Deploy to vercel dev"
         id: deploy-vercel-dev
         uses: amondnet/vercel-action@v20
-        env:
-          API_URL: https://multirepo-backend.herokuapp.com
+        # env:
+        #   API_URL: https://multirepo-backend.herokuapp.com
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }} 
-          vercel-args: '--env REACT_APP_API_URL="${{ env.API_URL }}"'
+          vercel-args: '-e REACT_APP_API_URL=https://multirepo-backend.herokuapp.com'
     outputs:
       preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
 
@@ -42,7 +42,7 @@ jobs:
     needs: [deploy-vercel]
     environment:
       name: api DEV
-      url: https://multirepo-backend.herokuapp.com/users
+      url: ${{ outputs.url }}
     steps:
       # - name: Echo output from other job
       #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
@@ -71,6 +71,8 @@ jobs:
           #       The "HD_" string will be stripped when the app starts. 
           #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
           HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
+    outputs:
+      url: https://multirepo-backend.herokuapp.com/users
     
   # end-to-end-local:
   #   name:  End-to-End Test Local
