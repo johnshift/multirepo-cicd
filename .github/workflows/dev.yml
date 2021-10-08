@@ -96,9 +96,11 @@ jobs:
 
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
+        env:
+          CYPRESS_FRONTEND_URL: https://multirepo-frontend-24ye56mwd-johnshift.vercel.app/
         with:
           # wait-on: ${{ needs.deploy-vercel.outputs.preview-url }}
-          wait-on: https://multirepo-frontend-24ye56mwd-johnshift.vercel.app/
+          wait-on: ${{ env.CYPRESS_FRONTED_URL }}
           wait-on-timeout: 30
           browser: chrome
           headless: true
