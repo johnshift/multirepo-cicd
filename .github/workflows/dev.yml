@@ -23,7 +23,7 @@ jobs:
   #         ref: 'dev'
   #         repository: johnshift/multirepo-frontend
   #     - name: "Deploy to vercel dev"
-  #       id: deploy-vercel
+  #       id: deploy-vercel-dev
   #       uses: amondnet/vercel-action@v20
   #       with:
   #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -37,6 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Assign Output
+        id: deploy-vercel-dev
         run: echo "::set-output name=preview-url::https://multirepo-frontend-9cs9um89c-johnshift.vercel.app/"
 
   deploy-heroku:
@@ -48,7 +49,7 @@ jobs:
       url: https://multirepo-backend.herokuapp.com/users
     steps:
       - name: Echo output from other job
-        run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
+        run: echo "FRONTEND_URL = ${{ needs.deploy-vercel-dev.outputs.preview-url }}"
       # - name: Checkout frontend repository
       #   uses: actions/checkout@v2
       #   with:
