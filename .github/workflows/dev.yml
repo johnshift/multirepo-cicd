@@ -96,7 +96,7 @@ jobs:
         run: npm --version && node --version
 
       - name: install latest npm
-        run: npm install -g npm@latest
+        run: sudo npm install -g npm@latest
 
       - name: versions again
         run: npm --version && node --version
