@@ -1,4 +1,4 @@
-name: DEV
+name: CICD
 on:
   workflow_dispatch:
   repository_dispatch:
@@ -11,7 +11,7 @@ concurrency: # only run 1 instance
 jobs:
 
   # deploy-vercel:
-  #   name: Deploy frontend to vercel
+  #   name: Deploy Frontend to Vercel
   #   runs-on: ubuntu-latest
   #   environment:
   #     name: web DEV
@@ -37,7 +37,7 @@ jobs:
   #     preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
 
   # deploy-heroku:
-  #   name: Deploy to heroku
+  #   name: Deploy Backend to Heroku
   #   runs-on: ubuntu-latest
   #   needs: [deploy-vercel]
   #   environment:
@@ -76,7 +76,7 @@ jobs:
   #       run: echo "::set-output name=url::https://multirepo-backend.herokuapp.com/users"
     
   # e2e-tests:
-  #   name:  End-to-End Test Local
+  #   name:  End-to-End Tests
   #   runs-on: ubuntu-latest
   #   needs: [deploy-vercel, deploy-heroku]
   #   steps:
@@ -124,50 +124,40 @@ jobs:
   #         git push origin staging
 
   merge-to-staging:
-    name: Merge dev branch to staging
+    name: Merge dev branches to staging
     runs-on: ubuntu-latest
     # needs: [e2e-tests]
     steps:
-      - name: Checkout CICD Repository
-        uses: actions/checkout@v2
-        with:
-          ref: 'dev'
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-          path: cicd
       
       - name: Checkout Frontend Repository
         uses: actions/checkout@v2
         with:
-          ref: 'dev'
           fetch-depth: 0
           token: ${{ secrets.PAT }}
           path: frontend
           repository: johnshift/multirepo-frontend
-      
-      - name: Checkout Backend Repository
-        uses: actions/checkout@v2
-        with:
-          ref: 'dev'
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-          path: backend
-          repository: johnshift/multirepo-backend
 
-      - name: Echo directories
-        run: ls -la
-
-      - name: Echo cicd folder
-        working-directory: cicd
-        run: ls -la
-
-      - name: Echo frontend folder
+      - name: Merge Frontend dev -> staging
         working-directory: frontend
-        run: ls -la
+        run: |
+          git checkout staging
+          git merge dev --commit -m 'merge dev -> staging' 
+          git push origin staging
+      
+      # - name: Checkout Backend Repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     token: ${{ secrets.PAT }}
+      #     path: backend
+      #     repository: johnshift/multirepo-backend
 
-      - name: Echo backend folder
-        working-directory: backend
-        run: ls -la
+      # - name: Checkout CICD Repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     token: ${{ secrets.PAT }}
+      #     path: cicd
 
 
 
