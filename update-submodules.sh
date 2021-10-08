@@ -30,7 +30,10 @@ for i in ${!submodules[@]}; do
     git submodule add -b $1 https://github.com/johnshift/multirepo-${submodules[$i]} ${submodules[$i]}
 done
 
-# e2e has only one branch, so we add it here manual
+# e2e has only one branch, so we remove then add it here manually
+git submodule deinit e2e
+git rm -rf e2e
+rm -rf .git/modules/e2e
 git submodule add https://github.com/johnshift/multirepo-e2e e2e
 
 # echo after init
