@@ -180,6 +180,7 @@ jobs:
           git push origin dev
 
       - name: Merge CICD dev -> staging
+        working-directory: cicd
         run: |
           git checkout staging
           git fetch origin dev
