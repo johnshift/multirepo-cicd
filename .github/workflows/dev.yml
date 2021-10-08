@@ -39,6 +39,8 @@ jobs:
       - name: Assign Output
         id: deploy-vercel-dev
         run: echo "::set-output name=preview-url::https://multirepo-frontend-9cs9um89c-johnshift.vercel.app/"
+    outputs:
+      preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
 
   deploy-heroku:
     name: Deploy to heroku
@@ -49,7 +51,7 @@ jobs:
       url: https://multirepo-backend.herokuapp.com/users
     steps:
       - name: Echo output from other job
-        run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.steps.deploy-vercel-dev.outputs.preview-url }}"
+        run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
       # - name: Checkout frontend repository
       #   uses: actions/checkout@v2
       #   with:
