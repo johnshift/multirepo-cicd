@@ -10,81 +10,84 @@ concurrency: # only run 1 instance
 
 jobs:
 
-  deploy-vercel:
-    name: Deploy frontend to vercel
-    runs-on: ubuntu-latest
-    environment:
-      name: web DEV
-      url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
-    steps:
-      - name: Checkout frontend repository
-        uses: actions/checkout@v2
-        with:
-          ref: 'dev'
-          repository: johnshift/multirepo-frontend
-      - name: "Deploy to vercel dev"
-        id: deploy-vercel-dev
-        uses: amondnet/vercel-action@v20
-        env:
-          API_URL: https://multirepo-backend.herokuapp.com
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          scope: ${{ secrets.VERCEL_ORG_ID }} 
-          vercel-args: '-b REACT_APP_API_URL=${{ secrets.API_URL }}'
-    outputs:
-      preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
+  # deploy-vercel:
+  #   name: Deploy frontend to vercel
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: web DEV
+  #     url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
+  #   steps:
+  #     - name: Checkout frontend repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: 'dev'
+  #         repository: johnshift/multirepo-frontend
+  #     - name: "Deploy to vercel dev"
+  #       id: deploy-vercel-dev
+  #       uses: amondnet/vercel-action@v20
+  #       env:
+  #         API_URL: https://multirepo-backend.herokuapp.com
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #         scope: ${{ secrets.VERCEL_ORG_ID }} 
+  #         vercel-args: '-b REACT_APP_API_URL=${{ secrets.API_URL }}'
+  #   outputs:
+  #     preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
 
-  deploy-heroku:
-    name: Deploy to heroku
-    runs-on: ubuntu-latest
-    needs: [deploy-vercel]
-    environment:
-      name: api DEV
-      url: ${{ steps.setting-output.outputs.url }}
-    steps:
-      # - name: Echo output from other job
-      #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
-      - name: Checkout frontend repository
-        uses: actions/checkout@v2
-        with:
-          ref: 'dev'
-          repository: johnshift/multirepo-backend
-      - name: Setup Java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '11'
-          cache: 'maven'
-      - name: Build Backend
-        run: mvn clean install -DskipTests
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-        env:
-          # note: "HD_" is needed to specify what to include in the deployed heroku app.
-          #       However, it is only needed to differentiate from other environment variables.
-          #       The "HD_" string will be stripped when the app starts. 
-          #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
-          HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
-      - name: Manual Set Output
-        id: setting-output
-        run: echo "::set-output name=url::https://multirepo-backend.herokuapp.com/users"
+  # deploy-heroku:
+  #   name: Deploy to heroku
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy-vercel]
+  #   environment:
+  #     name: api DEV
+  #     url: ${{ steps.setting-output.outputs.url }}
+  #   steps:
+  #     # - name: Echo output from other job
+  #     #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
+  #     - name: Checkout frontend repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: 'dev'
+  #         repository: johnshift/multirepo-backend
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v2
+  #       with:
+  #         distribution: 'adopt'
+  #         java-version: '11'
+  #         cache: 'maven'
+  #     - name: Build Backend
+  #       run: mvn clean install -DskipTests
+  #     - name: Deploy to Heroku
+  #       uses: akhileshns/heroku-deploy@v3.12.12
+  #       with:
+  #         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+  #         heroku_email: ${{ secrets.HEROKU_EMAIL }}
+  #         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+  #       env:
+  #         # note: "HD_" is needed to specify what to include in the deployed heroku app.
+  #         #       However, it is only needed to differentiate from other environment variables.
+  #         #       The "HD_" string will be stripped when the app starts. 
+  #         #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
+  #         HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
+  #     - name: Manual Set Output
+  #       id: setting-output
+  #       run: echo "::set-output name=url::https://multirepo-backend.herokuapp.com/users"
     
   e2e-tests:
     name:  End-to-End Test Local
     runs-on: ubuntu-latest
-    needs: [deploy-vercel, deploy-heroku]
+    # needs: [deploy-vercel, deploy-heroku]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           repository: johnshift/multirepo-e2e
       - uses: fregante/setup-git-user@v1
+
+      - name: List all files
+        run: ls -la
 
       - name: Setup Frontend
         uses: actions/setup-node@v2
@@ -99,7 +102,8 @@ jobs:
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
         with:
-          wait-on: ${{ needs.deploy-vercel.outputs.preview-url }}
+          # wait-on: ${{ needs.deploy-vercel.outputs.preview-url }}
+          wait-on: https://multirepo-frontend-24ye56mwd-johnshift.vercel.app/
           wait-on-timeout: 30
           browser: chrome
           headless: true
