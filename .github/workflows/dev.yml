@@ -25,14 +25,14 @@ jobs:
       - name: "Deploy to vercel dev"
         id: deploy-vercel-dev
         uses: amondnet/vercel-action@v20
-        # env:
-        #   API_URL: https://multirepo-backend.herokuapp.com
+        env:
+          API_URL: https://multirepo-backend.herokuapp.com
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           scope: ${{ secrets.VERCEL_ORG_ID }} 
-          vercel-args: '-b REACT_APP_API_URL=https://multirepo-backend.herokuapp.com'
+          vercel-args: '-b REACT_APP_API_URL=${{ secrets.API_URL }}'
     outputs:
       preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
 
