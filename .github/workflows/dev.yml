@@ -137,12 +137,21 @@ jobs:
           path: frontend
           repository: johnshift/multirepo-frontend
 
+      - name: echo git status
+        working-directory: frontend
+        run: git status
+
       - name: Merge Frontend dev -> staging
         working-directory: frontend
         run: |
           git checkout staging
-          git merge dev --commit -m 'merge dev -> staging' 
-          git push origin staging
+          git fetch origin dev
+          git merge origin/dev --commit -m 'merge dev -> staging' 
+          # git push origin staging
+
+      - name: echo git status
+        working-directory: frontend
+        run: git status
       
       # - name: Checkout Backend Repository
       #   uses: actions/checkout@v2
