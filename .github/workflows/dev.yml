@@ -78,6 +78,8 @@ jobs:
   e2e-tests:
     name:  End-to-End Test Local
     runs-on: ubuntu-latest
+    environment:
+      name: web DEV
     # needs: [deploy-vercel, deploy-heroku]
     steps:
       - name: Checkout
