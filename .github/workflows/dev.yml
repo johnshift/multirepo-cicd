@@ -174,7 +174,9 @@ jobs:
           git checkout dev
           git config --global user.email "${{ secrets.MY_EMAIL }}"
           git config --global user.name "${{ secrets.MY_NAME }}"
-          bash init-submodules.sh
+          git submodule status
+          bash init-submodules.sh dev
+          git submodule status
           git add .
           git commit -m 'update submodules'
           git push origin dev
@@ -185,4 +187,9 @@ jobs:
           git checkout staging
           git fetch origin dev
           git merge dev --commit -m 'merge dev -> staging' 
+          git submodule status
+          bash init-submodules.sh staging
+          git submodule status
+          git add .
+          git commit -m 'update submodules'
           # git push origin staging

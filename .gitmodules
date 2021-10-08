@@ -1,9 +1,11 @@
-[submodule "backend"]
-	path = backend
-	url = https://github.com/johnshift/multirepo-backend
 [submodule "frontend"]
 	path = frontend
-	url = https://github.com/johnshift/multirepo-frontend
+	url = http://github.com/johnshift/multirepo-frontend
+	branch = dev
+[submodule "backend"]
+	path = backend
+	url = http://github.com/johnshift/multirepo-backend
+	branch = dev
 [submodule "e2e"]
 	path = e2e
 	url = https://github.com/johnshift/multirepo-e2e

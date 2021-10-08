@@ -2,7 +2,6 @@
 submodules=(
     "backend"
     "frontend"
-    "e2e"
 );
 
 # manual entry for each repo needed
@@ -14,7 +13,9 @@ submodules=(
 # );
 
 # echo before init
+echo "============ before change ========="
 git submodule status
+echo "===================================="
 
 # cleanup submodules
 for module in ${submodules[@]}; do
@@ -26,8 +27,13 @@ done
 # add updated submodules
 for i in ${!submodules[@]}; do
     # git submodule add https://github.com/${repos[$i]} ${submodules[$i]}
-    git submodule add https://github.com/johnshift/multirepo-${submodules[$i]} ${submodules[$i]}
+    git submodule add -b $1 https://github.com/johnshift/multirepo-${submodules[$i]} ${submodules[$i]}
 done
 
+# e2e has only one branch, so we add it here manual
+git submodule add https://github.com/johnshift/multirepo-e2e e2e
+
 # echo after init
+echo "============ after change =========="
 git submodule status
+echo "===================================="
