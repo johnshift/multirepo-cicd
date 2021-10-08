@@ -143,6 +143,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
           path: frontend
+          repository: johnshift/multirepo-frontend
       
       - name: Checkout Backend Repository
         uses: actions/checkout@v2
@@ -151,6 +152,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
           path: backend
+          repository: johnshift/multirepo-backend
 
       - name: Echo directories
         run: ls -la
