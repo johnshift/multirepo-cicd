@@ -94,7 +94,7 @@ jobs:
 
       - name: Install e2e
         working-directory: ./frontend
-        run: npm i --frozen-lockfile
+        run: npm install --frozen-lockfile
 
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
