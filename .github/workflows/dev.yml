@@ -92,11 +92,13 @@ jobs:
       - name: List all files
         run: tree -aL 2
 
+      - name: versions
+        run: npm --version && node --version
+
       - name: Setup Frontend
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-          cache: 'npm'
 
       - name: Install e2e
         working-directory: ./frontend
