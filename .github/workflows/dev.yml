@@ -1,0 +1,195 @@
+name: CICD
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [backend, frontend] # workflow is only triggered after when frontend/backend passes their CI
+
+concurrency: # only run 1 instance
+  group: dev-deploy
+  cancel-in-progress: true
+
+jobs:
+
+  # deploy-vercel:
+  #   name: Deploy Frontend to Vercel
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: web DEV
+  #     url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
+  #   steps:
+  #     - name: Checkout frontend repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: 'dev'
+  #         repository: johnshift/multirepo-frontend
+  #     - name: "Deploy to vercel dev"
+  #       id: deploy-vercel-dev
+  #       uses: amondnet/vercel-action@v20
+  #       env:
+  #         API_URL: https://multirepo-backend.herokuapp.com
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #         scope: ${{ secrets.VERCEL_ORG_ID }} 
+  #         vercel-args: '-b REACT_APP_API_URL=${{ secrets.API_URL }}'
+  #   outputs:
+  #     preview-url: ${{ steps.deploy-vercel-dev.outputs.preview-url }}
+
+  # deploy-heroku:
+  #   name: Deploy Backend to Heroku
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy-vercel]
+  #   environment:
+  #     name: api DEV
+  #     url: ${{ steps.setting-output.outputs.url }}
+  #   steps:
+  #     # - name: Echo output from other job
+  #     #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
+  #     - name: Checkout frontend repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: 'dev'
+  #         repository: johnshift/multirepo-backend
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v2
+  #       with:
+  #         distribution: 'adopt'
+  #         java-version: '11'
+  #         cache: 'maven'
+  #     - name: Build Backend
+  #       run: mvn clean install -DskipTests
+  #     - name: Deploy to Heroku
+  #       uses: akhileshns/heroku-deploy@v3.12.12
+  #       with:
+  #         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+  #         heroku_email: ${{ secrets.HEROKU_EMAIL }}
+  #         heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+  #       env:
+  #         # note: "HD_" is needed to specify what to include in the deployed heroku app.
+  #         #       However, it is only needed to differentiate from other environment variables.
+  #         #       The "HD_" string will be stripped when the app starts. 
+  #         #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
+  #         HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
+  #     - name: Manual Set Output
+  #       id: setting-output
+  #       run: echo "::set-output name=url::https://multirepo-backend.herokuapp.com/users"
+    
+  # e2e-tests:
+  #   name:  End-to-End Tests
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy-vercel, deploy-heroku]
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: johnshift/multirepo-e2e
+  #     - uses: fregante/setup-git-user@v1
+
+  #     - name: Setup Frontend
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: '14'
+
+  #     - name: Install e2e
+  #       run: npm i --frozen-lockfile
+
+  #     - name: Run End-to-End Tests
+  #       uses: cypress-io/github-action@v2
+  #       env:
+  #         CYPRESS_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
+  #       with:
+  #         wait-on: ${{ needs.deploy-vercel.outputs.preview-url }}
+  #         wait-on-timeout: 30
+  #         browser: chrome
+  #         headless: true
+          
+      # - TODO: merge to staging if all tests passed
+  
+  # merge-to-staging:
+  #   name: Merge dev branch to staging
+  #   runs-on: ubuntu-latest
+  #   needs: [e2e-tests]
+  #   steps:
+  #     - name: Checkout Branch
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #         token: ${{ secrets.PAT }}
+  #     - uses: fregante/setup-git-user@v1
+  #     - name: Merge
+  #       run: |
+  #         git checkout staging
+  #         git merge dev --commit -m 'merge dev -> staging' 
+  #         git push origin staging
+
+  merge-to-staging:
+    name: Merge dev branches to staging
+    runs-on: ubuntu-latest
+    # needs: [e2e-tests]
+    steps:
+      
+      # - name: Checkout Frontend Repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     token: ${{ secrets.PAT }}
+      #     path: frontend
+      #     repository: johnshift/multirepo-frontend
+
+      # - name: Merge Frontend dev -> staging
+      #   working-directory: frontend
+      #   run: |
+      #     git checkout staging
+      #     git fetch origin dev
+      #     git merge origin/dev --commit -m 'merge dev -> staging' 
+      #     git push origin staging
+      
+      # - name: Checkout Backend Repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     token: ${{ secrets.PAT }}
+      #     path: backend
+      #     repository: johnshift/multirepo-backend
+        
+      # - name: Merge Backend dev -> staging
+      #   working-directory: backend
+      #   run: |
+      #     git checkout staging
+      #     git fetch origin dev
+      #     git merge origin/dev --commit -m 'merge dev -> staging' 
+      #     git push origin staging
+
+      - name: Checkout CICD Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+          path: cicd
+        
+      - name: Update submodules
+        working-directory: cicd
+        run: |
+          git checkout dev
+          git config --global user.email "${{ secrets.MY_EMAIL }}"
+          git config --global user.name "${{ secrets.MY_NAME }}"
+          git submodule status
+          bash init-submodules.sh dev
+          git submodule status
+          git add .
+          git commit -m 'update submodules'
+          git push origin dev
+
+      - name: Merge CICD dev -> staging
+        working-directory: cicd
+        run: |
+          git checkout staging
+          git fetch origin dev
+          git merge dev --commit -m 'merge dev -> staging' 
+          git submodule status
+          bash init-submodules.sh staging
+          git submodule status
+          git add .
+          git commit -m 'update submodules'
+          # git push origin staging
