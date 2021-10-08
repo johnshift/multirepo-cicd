@@ -129,37 +129,37 @@ jobs:
     # needs: [e2e-tests]
     steps:
       
-      - name: Checkout Frontend Repository
+      # - name: Checkout Frontend Repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     token: ${{ secrets.PAT }}
+      #     path: frontend
+      #     repository: johnshift/multirepo-frontend
+
+      # - name: Merge Frontend dev -> staging
+      #   working-directory: frontend
+      #   run: |
+      #     git checkout staging
+      #     git fetch origin dev
+      #     git merge origin/dev --commit -m 'merge dev -> staging' 
+      #     git push origin staging
+      
+      - name: Checkout Backend Repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
-          path: frontend
-          repository: johnshift/multirepo-frontend
-
-      - name: echo git status
-        working-directory: frontend
-        run: git status
-
-      - name: Merge Frontend dev -> staging
-        working-directory: frontend
+          path: backend
+          repository: johnshift/multirepo-backend
+        
+      - name: Merge Backend dev -> staging
+        working-directory: backend
         run: |
           git checkout staging
           git fetch origin dev
           git merge origin/dev --commit -m 'merge dev -> staging' 
           # git push origin staging
-
-      - name: echo git status
-        working-directory: frontend
-        run: git status
-      
-      # - name: Checkout Backend Repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     fetch-depth: 0
-      #     token: ${{ secrets.PAT }}
-      #     path: backend
-      #     repository: johnshift/multirepo-backend
 
       # - name: Checkout CICD Repository
       #   uses: actions/checkout@v2
