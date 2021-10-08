@@ -86,8 +86,11 @@ jobs:
           repository: johnshift/multirepo-e2e
       - uses: fregante/setup-git-user@v1
 
+      - name: install tree
+        run: sudo apt install tree
+
       - name: List all files
-        run: ls -la
+        run: tree -aL 2
 
       - name: Setup Frontend
         uses: actions/setup-node@v2
