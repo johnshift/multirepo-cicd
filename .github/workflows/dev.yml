@@ -86,32 +86,13 @@ jobs:
           repository: johnshift/multirepo-e2e
       - uses: fregante/setup-git-user@v1
 
-      - name: install tree
-        run: sudo apt install tree
-
-      - name: List all files
-        run: tree -aL 2
-
-      - name: versions
-        run: npm --version && node --version
-
-      - name: cat package.json
-        run: cat package.json
-
-      # - name: install latest npm
-      #   run: sudo npm install -g npm@latest
-
-      # - name: versions again
-      #   run: npm --version && node --version
-
       - name: Setup Frontend
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
       - name: Install e2e
-        working-directory: ./frontend
-        run: npm install --only=dev
+        run: npm i --frozen-lockfile
 
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
