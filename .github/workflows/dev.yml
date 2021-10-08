@@ -95,6 +95,9 @@ jobs:
       - name: versions
         run: npm --version && node --version
 
+      - name: cat package.json
+        run: cat package.json
+
       # - name: install latest npm
       #   run: sudo npm install -g npm@latest
 
