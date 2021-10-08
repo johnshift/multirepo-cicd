@@ -145,33 +145,41 @@ jobs:
       #     git merge origin/dev --commit -m 'merge dev -> staging' 
       #     git push origin staging
       
-      - name: Checkout Backend Repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-          path: backend
-          repository: johnshift/multirepo-backend
-        
-      - name: Merge Backend dev -> staging
-        working-directory: backend
-        run: |
-          git checkout staging
-          git fetch origin dev
-          git merge origin/dev --commit -m 'merge dev -> staging' 
-          # git push origin staging
-
-      # - name: Checkout CICD Repository
+      # - name: Checkout Backend Repository
       #   uses: actions/checkout@v2
       #   with:
       #     fetch-depth: 0
       #     token: ${{ secrets.PAT }}
-      #     path: cicd
-
-
-
-      # - name: Merge
+      #     path: backend
+      #     repository: johnshift/multirepo-backend
+        
+      # - name: Merge Backend dev -> staging
+      #   working-directory: backend
       #   run: |
       #     git checkout staging
-      #     git merge dev --commit -m 'merge dev -> staging' 
+      #     git fetch origin dev
+      #     git merge origin/dev --commit -m 'merge dev -> staging' 
       #     git push origin staging
+
+      - name: Checkout CICD Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+          path: cicd
+        
+      - name: Update submodules
+        working-directory: cicd
+        run: |
+          git checkout dev
+          bash init-submodules.sh
+          git add .
+          git commit -m 'update submodules'
+          git push origin dev
+
+      - name: Merge CICD dev -> staging
+        run: |
+          git checkout staging
+          git fetch origin dev
+          git merge dev --commit -m 'merge dev -> staging' 
+          # git push origin staging
