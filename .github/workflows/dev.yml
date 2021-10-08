@@ -95,11 +95,11 @@ jobs:
       - name: versions
         run: npm --version && node --version
 
-      - name: install latest npm
-        run: sudo npm install -g npm@latest
+      # - name: install latest npm
+      #   run: sudo npm install -g npm@latest
 
-      - name: versions again
-        run: npm --version && node --version
+      # - name: versions again
+      #   run: npm --version && node --version
 
       - name: Setup Frontend
         uses: actions/setup-node@v2
@@ -108,7 +108,7 @@ jobs:
 
       - name: Install e2e
         working-directory: ./frontend
-        run: npm install
+        run: npm install --only=dev
 
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
