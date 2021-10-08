@@ -167,6 +167,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
           path: cicd
+      - uses: fregante/setup-git-user@v1
         
       - name: Update submodules
         working-directory: cicd
