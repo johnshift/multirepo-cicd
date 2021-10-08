@@ -83,7 +83,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.PAT }}
           repository: johnshift/multirepo-e2e
       - uses: fregante/setup-git-user@v1
 
@@ -103,7 +102,7 @@ jobs:
 
       - name: Install e2e
         working-directory: ./frontend
-        run: npm install
+        run: yarn install
 
       - name: Run End-to-End Tests
         uses: cypress-io/github-action@v2
