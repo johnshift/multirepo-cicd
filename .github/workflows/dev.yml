@@ -50,33 +50,33 @@ jobs:
       name: api DEV
       url: https://multirepo-backend.herokuapp.com/users
     steps:
-      - name: Echo output from other job
-        run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
-      # - name: Checkout frontend repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     ref: 'dev'
-      #     repository: johnshift/multirepo-backend
-      # - name: Setup Java
-      #   uses: actions/setup-java@v2
-      #   with:
-      #     distribution: 'adopt'
-      #     java-version: '11'
-      #     cache: 'maven'
-      # - name: Build Backend
-      #   run: mvn clean install -DskipTests
-      # - name: Deploy to Heroku
-      #   uses: akhileshns/heroku-deploy@v3.12.12
-        # with:
-        #   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        #   heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        #   heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-        # env:
-        #   # note: "HD_" is needed to specify what to include in the deployed heroku app.
-        #   #       However, it is only needed to differentiate from other environment variables.
-        #   #       The "HD_" string will be stripped when the app starts. 
-        #   #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
-        #   HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
+      # - name: Echo output from other job
+      #   run: echo "FRONTEND_URL = ${{ needs.deploy-vercel.outputs.preview-url }}"
+      - name: Checkout frontend repository
+        uses: actions/checkout@v2
+        with:
+          ref: 'dev'
+          repository: johnshift/multirepo-backend
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          cache: 'maven'
+      - name: Build Backend
+        run: mvn clean install -DskipTests
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+        env:
+          # note: "HD_" is needed to specify what to include in the deployed heroku app.
+          #       However, it is only needed to differentiate from other environment variables.
+          #       The "HD_" string will be stripped when the app starts. 
+          #       Therefore you need to use "FRONTEND_URL" when accessing from inside the app.  
+          HD_FRONTEND_URL: ${{ needs.deploy-vercel.outputs.preview-url }}
     
   # end-to-end-local:
   #   name:  End-to-End Test Local
