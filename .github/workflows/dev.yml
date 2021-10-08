@@ -75,60 +75,36 @@ jobs:
         id: setting-output
         run: echo "::set-output name=url::https://multirepo-backend.herokuapp.com/users"
     
-  # end-to-end-local:
-  #   name:  End-to-End Test Local
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         ref: 'dev'
-  #         submodules: true
-  #     - uses: fregante/setup-git-user@v1
+  e2e-tests:
+    name:  End-to-End Test Local
+    runs-on: ubuntu-latest
+    needs: [deploy-vercel, deploy-heroku]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: johnshift/multirepo-e2e
+      - uses: fregante/setup-git-user@v1
 
-  #     - name: Init submodules
-  #       run: bash init-submodules.sh
+      - name: Setup Frontend
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
 
-  #     - name: Setup Java
-  #       uses: actions/setup-java@v2
-  #       with:
-  #         distribution: 'adopt'
-  #         java-version: '11'
-  #         cache: 'maven'
+      - name: Install e2e
+        working-directory: ./frontend
+        run: npm i --frozen-lockfile
 
-  #     - name: Build Backend
-  #       working-directory: ./backend
-  #       run: mvn clean install -DskipTests
-
-  #     - name: Setup Frontend
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: '14'
-  #         cache: 'npm'
-  #         cache-dependency-path: frontend/yarn.lock
-
-  #     - name: Install Yarn
-  #       run: npm install -g yarn
-
-  #     - name: Compile Frontend
-  #       working-directory: ./frontend
-  #       run: yarn install && yarn build
-
-  #     - name: Run End-to-End Tests
-  #       uses: cypress-io/github-action@v2
-  #       with:
-  #         start: yarn start
-  #         working-directory: ./frontend
-  #         wait-on: "http://localhost:5000"
-  #         wait-on-timeout: 30
-  #         browser: chrome
-  #         headless: true
-
-  #     - name: Save changes (if any) to dev branch
-  #       uses: EndBug/add-and-commit@v7
-  #       with:
-  #         branch: dev
-  #         message: 'updated branch dev from workflow'
+      - name: Run End-to-End Tests
+        uses: cypress-io/github-action@v2
+        with:
+          wait-on: ${{ needs.deploy-vercel.outputs.preview-url }}
+          wait-on-timeout: 30
+          browser: chrome
+          headless: true
+          
+      # - TODO: merge to staging if all tests passed
   
   # merge-to-staging:
   #   name: Merge dev branch to staging
