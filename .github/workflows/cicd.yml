@@ -161,9 +161,6 @@ jobs:
       #     git merge origin/dev --commit -m 'merge dev -> staging' 
       #     git push origin staging
 
-
-      - uses: fregante/setup-git-user@v1
-
       - name: Checkout CICD Repository
         uses: actions/checkout@v2
         with:
