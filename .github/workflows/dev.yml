@@ -78,13 +78,12 @@ jobs:
   e2e-tests:
     name:  End-to-End Test Local
     runs-on: ubuntu-latest
-    environment:
-      name: web DEV
     # needs: [deploy-vercel, deploy-heroku]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.PAT }}
           repository: johnshift/multirepo-e2e
       - uses: fregante/setup-git-user@v1
 
