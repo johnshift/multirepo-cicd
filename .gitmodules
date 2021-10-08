@@ -4,3 +4,6 @@
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/johnshift/multirepo-frontend
+[submodule "e2e"]
+	path = e2e
+	url = https://github.com/johnshift/multirepo-e2e
